@@ -4,7 +4,8 @@ import chromadb
 
 import streamlit as st
 import pandas as pd
-import ollama
+from groq import Groq
+client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 st.set_page_config(page_title="Company Policy Assistant", layout="wide")
 
 st.title("Company Policy Assistant")
@@ -73,8 +74,8 @@ if ai_question:
             for _, row in policies.iterrows()
         )
 
-        response = ollama.chat(
-            model="llama3.2:1b",
+        response = ollama.chat.completions.create(
+           model="llama-3.1-8b-instant",
             messages=[
                 {
                     "role": "system",
@@ -89,16 +90,16 @@ if ai_question:
                 {"role": "user", "content": ai_question},
             ],
         )
-
-        st.write(response["message"]["content"])
-        st.caption(f"Tokens used: {response.get(chr(101)+chr(118)+chr(97)+chr(108)+chr(95)+chr(99)+chr(111)+chr(117)+chr(110)+chr(116), 0) + response.get(chr(112)+chr(114)+chr(111)+chr(109)+chr(112)+chr(116)+chr(95)+chr(101)+chr(118)+chr(97)+chr(108)+chr(95)+chr(99)+chr(111)+chr(117)+chr(110)+chr(116), 0)}")
+#
+st.write(response.choices[0].message.content)
+         st.caption(f"Tokens used: {response.usage.total_tokens}")
         elapsed_time_ai = time.perf_counter() - start_time_ai
         st.caption(f"Response time: {elapsed_time_ai:.4f} seconds")
         st.session_state["method2_result"] = {
-            "answer": response["message"]["content"],
+            "answer": response.choices[0].message.content,
             "policy": "Identified in AI answer",
             "time": f"{elapsed_time_ai:.4f} seconds",
-            "tokens": response.get("prompt_eval_count", 0) + response.get("eval_count", 0),
+            "tokens": response.usage.total_tokens,
         }
 
 st.divider()
@@ -130,9 +131,9 @@ if vector_question:
             )
         )
 
-        response = ollama.chat(
-            model="llama3.2:3b",
-            options={"temperature": 0},
+       response = client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            temperature=0,
             messages=[
                 {
                     "role": "system",
@@ -148,10 +149,10 @@ if vector_question:
             ],
         )
 
-        st.write(response["message"]["content"])
-        input_tokens = response.get("prompt_eval_count", 0)
-        output_tokens = response.get("eval_count", 0)
-        st.caption(f"Tokens used: {input_tokens + output_tokens}")
+        st.write(response.choices[0].message.content)
+        input_tokens = response.usage.prompt_tokens
+        output_tokens = response.usage.completion_tokens
+       st.caption(f"Tokens used: {response.usage.total_tokens}")
         elapsed_time_vector = time.perf_counter() - start_time_vector
         st.caption(f"Response time: {elapsed_time_vector:.4f} seconds")
         st.caption("Relevant policies retrieved from the vector index:")
@@ -159,7 +160,6 @@ if vector_question:
             st.write("•", metadata["title"])
 
         st.session_state["method3_result"] = {
-            "answer": response["message"]["content"],
             "policy": ", ".join(
                 metadata["title"] for metadata in results["metadatas"][0]
             ),
@@ -214,4 +214,3 @@ st.write(
     "approach did not invent a phone number or add unsupported details, "
     "although it retrieved an unrelated policy. More testing and safeguards "
     "would be needed before using it in a real company."
-)
