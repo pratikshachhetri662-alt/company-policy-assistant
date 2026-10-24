@@ -96,11 +96,11 @@ if ai_question:
          elapsed_time_ai = time.perf_counter() - start_time_ai
          st.caption(f"Response time: {elapsed_time_ai:.4f} seconds")
          st.session_state["method2_result"] = {
-            "answer": response.choices[0].message.content,
-            "policy": "Identified in AI answer",
-            "time": f"{elapsed_time_ai:.4f} seconds",
-            "tokens": response.usage.total_tokens,
-        }
+         "answer": response.choices[0].message.content,
+         "policy": "Identified in AI answer",
+         "time": f"{elapsed_time_ai:.4f} seconds",
+         "tokens": response.usage.total_tokens,
+         }
 
 st.divider()
 st.header("Method 3: LLM With Vector Index")
