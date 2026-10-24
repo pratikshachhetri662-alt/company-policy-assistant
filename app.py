@@ -114,8 +114,22 @@ if vector_question:
     start_time_vector = time.perf_counter()
     with st.spinner("Searching relevant policies and generating an answer..."):
         chroma_client = chromadb.PersistentClient(path="./chroma_db")
-        collection = chroma_client.get_collection("company_policies")
+        collection = chroma_client.get_or_create_collection("company_policies")
+        if collection.count() == 0:
+           policies = pd.read_csv("company_policies.csv").fillna("")
 
+           collection.add(
+                    ids=[str(i) for i in range(len(policies))],
+                    documents=policies["policy_text"].tolist(),
+                    metadatas=[
+                        {
+                            "title": row["title"],
+                            "department": row["department"],
+                            "category": row["category"],
+                        }
+                        for _, row in policies.iterrows()
+                    ],
+                )
         results = collection.query(
             query_texts=[vector_question],
             n_results=1
