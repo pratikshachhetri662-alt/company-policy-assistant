@@ -91,7 +91,7 @@ if ai_question:
             ],
         )
 #
-st.write(response.choices[0].message.content)
+    st.write(response.choices[0].message.content)
          st.caption(f"Tokens used: {response.usage.total_tokens}")
         elapsed_time_ai = time.perf_counter() - start_time_ai
         st.caption(f"Response time: {elapsed_time_ai:.4f} seconds")
