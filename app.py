@@ -113,8 +113,8 @@ vector_question = st.text_input(
 if vector_question:
     start_time_vector = time.perf_counter()
     with st.spinner("Searching relevant policies and generating an answer..."):
-        client = chromadb.PersistentClient(path="./chroma_db")
-        collection = client.get_collection("company_policies")
+        chroma_client = chromadb.PersistentClient(path="./chroma_db")
+        collection = chroma_client.get_collection("company_policies")
 
         results = collection.query(
             query_texts=[vector_question],
@@ -152,7 +152,7 @@ if vector_question:
         st.write(response.choices[0].message.content)
         input_tokens = response.usage.prompt_tokens
         output_tokens = response.usage.completion_tokens
-       st.caption(f"Tokens used: {response.usage.total_tokens}")
+        st.caption(f"Tokens used: {response.usage.total_tokens}")
         elapsed_time_vector = time.perf_counter() - start_time_vector
         st.caption(f"Response time: {elapsed_time_vector:.4f} seconds")
         st.caption("Relevant policies retrieved from the vector index:")
@@ -160,6 +160,7 @@ if vector_question:
             st.write("•", metadata["title"])
 
         st.session_state["method3_result"] = {
+            "answer": response.choices[0].message.content,
             "policy": ", ".join(
                 metadata["title"] for metadata in results["metadatas"][0]
             ),
