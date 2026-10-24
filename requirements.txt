@@ -1,4 +1,4 @@
 streamlit
 pandas
-ollama
+groq
 chromadb
