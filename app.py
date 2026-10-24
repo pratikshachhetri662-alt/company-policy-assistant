@@ -74,7 +74,7 @@ if ai_question:
             for _, row in policies.iterrows()
         )
 
-        response = ollama.chat.completions.create(
+        response = client.chat.completions.create(
            model="llama-3.1-8b-instant",
             messages=[
                 {
@@ -90,12 +90,12 @@ if ai_question:
                 {"role": "user", "content": ai_question},
             ],
         )
-if response:
+    if response:
          st.write(response.choices[0].message.content)
          st.caption(f"Tokens used: {response.usage.total_tokens}")
-        elapsed_time_ai = time.perf_counter() - start_time_ai
-        st.caption(f"Response time: {elapsed_time_ai:.4f} seconds")
-        st.session_state["method2_result"] = {
+         elapsed_time_ai = time.perf_counter() - start_time_ai
+         st.caption(f"Response time: {elapsed_time_ai:.4f} seconds")
+         st.session_state["method2_result"] = {
             "answer": response.choices[0].message.content,
             "policy": "Identified in AI answer",
             "time": f"{elapsed_time_ai:.4f} seconds",
