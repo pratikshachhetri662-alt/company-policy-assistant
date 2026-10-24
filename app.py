@@ -90,7 +90,7 @@ if ai_question:
                 {"role": "user", "content": ai_question},
             ],
         )
-#
+if response:
          st.write(response.choices[0].message.content)
          st.caption(f"Tokens used: {response.usage.total_tokens}")
         elapsed_time_ai = time.perf_counter() - start_time_ai
