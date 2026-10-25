@@ -28,7 +28,7 @@ if question:
     words = [
         word.strip("?!.,").lower()
         for word in question.split()
-        if len(word.strip("?!.,")) > 3
+        if len(word.strip("?!.,")) > 3 and word.strip("?!. ,").lower() not in {"what", "which", "where", "when", "does", "have", "about", "company", "policy"}
     ]
 
     matches = policies[
