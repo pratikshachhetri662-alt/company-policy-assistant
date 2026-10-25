@@ -212,21 +212,21 @@ st.subheader("Analysis and Recommended Approach")
 
 st.write(
     "The three methods showed different strengths and weaknesses. "
-    "Rules-based search was fastest in the dress code test (0.0246 seconds) "
-    "and used no AI tokens, but returned several unrelated policies. "
-    "The LLM without a vector index answered correctly in 5.0338 seconds "
-    "using 2,205 tokens. The LLM with a vector index identified the "
-    "Dress Code Policy and answered correctly in 3.8522 seconds using "
-    "139 tokens. These are individual test results, not averages."
+        "The rules-based search was very fast, but sometimes returned unrelated policies. "
+    "Both AI methods answered the dress code question correctly. "
+    "The LLM without a vector index took 0.4509 seconds and used 2,305 tokens. "
+    "The LLM with a vector index took 0.6492 seconds and used only 249 tokens. "
+    "This shows that the vector index reduced token usage significantly, "
+    "although it was slightly slower in this test."
 )
 
 st.write(
-    "Based on these tests, the LLM with a vector index is the preferred "
-    "approach because it retrieves relevant policies and uses fewer tokens. "
-    "For the unsupported CEO phone-number question, rules-based search "
-    "returned an unrelated Sick Leave Policy, while the LLM without a "
-    "vector index added unsupported contact suggestions. The vector-index "
-    "approach did not invent a phone number or add unsupported details, "
-    "although it retrieved an unrelated policy. More testing and safeguards "
-    "would be needed before using it in a real company."
+        "Based on my testing, I would recommend the LLM with a vector index "
+    "because it found the correct Dress Code Policy and used fewer tokens. "
+    "I also tested what happened when I asked for the CEO's personal phone number. "
+    "Neither AI method invented a phone number, which was a good result. "
+    "However, the vector search retrieved an unrelated Whistleblower Policy, "
+    "and the rules-based search also returned an unrelated policy. "
+    "This shows that the system still needs improvement in recognizing questions "
+    "that are not answered by the policies. I would do more testing before using it in a real company."
 )
